@@ -11,6 +11,13 @@ public class Incident {
 
     private Officer officer;    //foreign key
 
+    public Incident(int id, IncidentType incidentType, String progressDetails, Status status) {
+        this.id = id;
+        this.incidentType = incidentType;
+        this.progressDetails = progressDetails;
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }
