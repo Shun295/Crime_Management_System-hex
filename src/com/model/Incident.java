@@ -3,6 +3,8 @@ package com.model;
 import com.enums.IncidentType;
 import com.enums.Status;
 
+import java.util.Objects;
+
 public class Incident {
     private int id;
     private IncidentType incidentType;
@@ -66,5 +68,17 @@ public class Incident {
                 ", progressDetails='" + progressDetails + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Incident incident = (Incident) o;
+        return id == incident.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
