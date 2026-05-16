@@ -4,7 +4,10 @@ import com.enums.IncidentType;
 import com.enums.Status;
 import com.model.Incident;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StreamsService {
 
@@ -70,4 +73,44 @@ public class StreamsService {
                         .sorted()
                         .toList();
         }
+        public Map<IncidentType, Integer> getIncidentStatByType(List<Incident> list) {
+                Map<IncidentType,Integer> mapOutput = new HashMap<>();
+                Map<IncidentType, List<Incident>> map =  list
+                        .stream()
+                        .collect(Collectors.groupingBy(Incident :: getIncidentType));
+
+                map.forEach((key, value) -> mapOutput.put(key, value.size()));
+
+                return mapOutput;
+        }
 }
+/*
+streams
+-------
+group by stats tasks:
+We do not have group by directly in streams so we use Collectors class which has groupingBy in it.
+
+How do we use it?
+in Group by, we first select the key(anchor) - IncidentType
+Incident :: getIncidentType
+
+After this, what u get is your key and the records associated with this key.
+
+KEY: ABUSE
+        Incident incident1 = new Incident(1, IncidentType.ABUSE, "Case file created.", IncidentStatus.INITIATED);
+        Incident incident7 = new Incident(7, IncidentType.ABUSE, "Evidence verified.", IncidentStatus.VERIFIED);
+KEY: THEFT
+        Incident incident2 = new Incident(2, IncidentType.THEFT, "Security footage under review.", IncidentStatus.ACTIVE);
+KEY: MISSING_PERSON
+        Incident incident3 = new Incident(3, IncidentType.MISSING_PERSON, "Statement confirmed.", IncidentStatus.VERIFIED);
+
+map = Map<IncidentType, List<Incident>>
+
+If u need only the count of List<Incident>
+Map<IncidentType, Integer> mapOutput <-- I want this
+map.entryset().forEach(
+    entry-> mapOutput.put(entry.getKey(), entry.getValue().size())
+)
+
+AI Copilot :
+* */

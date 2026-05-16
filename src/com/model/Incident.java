@@ -65,7 +65,6 @@ public class Incident {
                 ", incidentType=" + incidentType +
                 ", progressDetails='" + progressDetails + '\'' +
                 ", status=" + status +
-                ", officer=" + officer +
                 '}';
     }
 }
