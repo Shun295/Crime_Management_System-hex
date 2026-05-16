@@ -1,0 +1,153 @@
+CREATE DATABASE crime_db;
+USE crime_db;
+
+-- -----------------------------------------------------
+-- USERS
+-- -----------------------------------------------------
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    role VARCHAR(30) NOT NULL
+);
+
+-- -----------------------------------------------------
+-- STATION HEAD
+-- -----------------------------------------------------
+CREATE TABLE station_head (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    users_id INT,
+    FOREIGN KEY (users_id) REFERENCES users(id)
+);
+
+-- -----------------------------------------------------
+-- STATION
+-- -----------------------------------------------------
+CREATE TABLE station (
+    id INT PRIMARY KEY,
+    station_title VARCHAR(100) NOT NULL,
+    address VARCHAR(150),
+    station_head_id INT,
+    FOREIGN KEY (station_head_id) REFERENCES station_head(id)
+);
+
+-- -----------------------------------------------------
+-- OFFICER
+-- -----------------------------------------------------
+CREATE TABLE officer (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    users_id INT,
+    station_id INT,
+    FOREIGN KEY (users_id) REFERENCES users(id),
+    FOREIGN KEY (station_id) REFERENCES station(id)
+);
+
+-- -----------------------------------------------------
+-- INCIDENT
+-- -----------------------------------------------------
+CREATE TABLE incident (
+    id INT PRIMARY KEY,
+    officer_id INT,
+    type VARCHAR(100),
+    progress_details VARCHAR(255),
+    status VARCHAR(50),
+    FOREIGN KEY (officer_id) REFERENCES officer(id)
+);
+
+-- -----------------------------------------------------
+-- USERS DATA
+-- -----------------------------------------------------
+INSERT INTO users (id, username, password, role) VALUES
+(1, 'head_admin1', 'pass123', 'station_head'),
+(2, 'head_admin2', 'pass123', 'station_head'),
+(3, 'head_admin3', 'pass123', 'station_head'),
+(4, 'officer_smith', 'secure456', 'officer'),
+(5, 'officer_davis', 'secure456', 'officer'),
+(6, 'officer_jones', 'secure456', 'officer'),
+(7, 'officer_miller', 'secure456', 'officer'),
+(8, 'officer_wilson', 'secure456', 'officer'),
+(9, 'officer_taylor', 'secure456', 'officer'),
+(10, 'officer_brown', 'secure456', 'officer'),
+(11, 'officer_white', 'secure456', 'officer'),
+(12, 'officer_clark', 'secure456', 'officer');
+
+-- -----------------------------------------------------
+-- STATION HEAD DATA
+-- -----------------------------------------------------
+INSERT INTO station_head (id, name, users_id) VALUES
+(101, 'Chief Edward Blake', 1),
+(102, 'Chief Maria Santos', 2),
+(103, 'Chief Thomas Wright', 3);
+
+-- -----------------------------------------------------
+-- STATION DATA
+-- -----------------------------------------------------
+INSERT INTO station (id, station_title, address, station_head_id) VALUES
+(201, 'Metro Central Station', '100 Downtown Blvd', 101),
+(202, 'Northside Precinct', '452 Hiller Ave', 102),
+(203, 'East Valley Station', '89 Orchard Rd', 103);
+
+-- -----------------------------------------------------
+-- OFFICER DATA
+-- -----------------------------------------------------
+INSERT INTO officer (id, name, users_id, station_id) VALUES
+(301, 'Officer John Smith', 4, 201),
+(302, 'Officer Anna Davis', 5, 201),
+(303, 'Officer Robert Jones', 6, 201),
+(304, 'Officer David Miller', 7, 202),
+(305, 'Officer Sarah Wilson', 8, 202),
+(306, 'Officer James Taylor', 9, 202),
+(307, 'Officer Michael Brown', 10, 203),
+(308, 'Officer Emily White', 11, 203),
+(309, 'Officer Kevin Clark', 12, 203);
+
+-- -----------------------------------------------------
+-- INCIDENT DATA
+-- -----------------------------------------------------
+INSERT INTO incident (id, officer_id, type, progress_details, status) VALUES
+(1, 301, 'theft', 'Bicycle stolen from outside the library.', 'initiated'),
+(2, 301, 'murder', 'Crime scene investigation in progress.', 'active'),
+(3, 302, 'missing person', 'Teenager missing from school route.', 'active'),
+(4, 302, 'report abuse', 'Domestic abuse complaint registered.', 'verified'),
+(5, 303, 'theft', 'Shoplifting suspect detained.', 'closed'),
+(6, 303, 'murder', 'Cold case reopened.', 'initiated'),
+(7, 304, 'missing person', 'Elderly missing person search ongoing.', 'active'),
+(8, 304, 'report abuse', 'Workplace harassment complaint filed.', 'verified'),
+(9, 305, 'theft', 'Wallet theft reported.', 'initiated'),
+(10, 305, 'theft', 'Vehicle break-in case.', 'active'),
+(11, 306, 'murder', 'Suspect apprehended.', 'verified'),
+(12, 306, 'report abuse', 'Child neglect investigation.', 'active'),
+(13, 307, 'missing person', 'Hiker missing in state park.', 'active'),
+(14, 307, 'theft', 'Convenience store robbery.', 'initiated'),
+(15, 308, 'report abuse', 'Cyberbullying complaint.', 'initiated'),
+(16, 308, 'murder', 'Trial completed.', 'closed'),
+(17, 309, 'missing person', 'Missing child found safe.', 'closed'),
+(18, 309, 'theft', 'Residential burglary.', 'active'),
+(19, 301, 'report abuse', 'Financial abuse investigation.', 'active'),
+(20, 302, 'murder', 'Suspect identified.', 'active'),
+(21, 303, 'theft', 'Festival pickpocket case.', 'initiated'),
+(22, 304, 'missing person', 'Runaway juvenile located.', 'closed'),
+(23, 305, 'report abuse', 'Restaurant altercation.', 'verified'),
+(24, 306, 'theft', 'Warehouse burglary.', 'active'),
+(25, 307, 'murder', 'Weapon recovered.', 'verified'),
+(26, 308, 'missing person', 'Tourist located.', 'closed'),
+(27, 309, 'theft', 'Recovered stolen vehicle.', 'closed'),
+(28, 301, 'report abuse', 'Landlord harassment complaint.', 'initiated'),
+(29, 302, 'theft', 'Package theft reported.', 'active');
+
+-- Display all incidents handled by particular officer name. 
+
+select i.id,i.type,i.status   
+from incident i JOIN officer o ON i.officer_id = o.id
+where o.name LIKE '%john smith%';
+
+-- Give me the details of Station master responsible for incident ID:22 
+
+select sh.name as "Station Head", o.name as "Handling Officer", i.type as "Incident", i.progress_details as "Incident Report"
+from station_head sh 
+JOIN station s ON sh.id = s.station_head_id 
+JOIN officer o ON s.id = o.station_id 
+JOIN incident i ON o.id = i.officer_id 
+where i.id=22;
