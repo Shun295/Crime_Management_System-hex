@@ -5,6 +5,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
+
+    private static final DBConnection dbConnection;
+    static{
+        dbConnection=new DBConnection();
+    }
+    private DBConnection() {
+
+    }
+    public static DBConnection getInstance()
+    {
+        return dbConnection;
+    }
     private String url="jdbc:mysql://localhost:3306/crime_db";
     private String userDb = "root";
     private String passDB = "Shun19004mathi@";
@@ -13,6 +25,7 @@ public class DBConnection {
 
     public Connection dbConnect() {
         // load the driver
+
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
